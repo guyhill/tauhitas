@@ -458,7 +458,8 @@ static void SetCountBounds(JJTable& Tab, CountInfo& Y, TotCountInfo &Yc)
                             DoIt = !DOSINGLEWITHSINGLE;	// If DOSINGLEWITHSINGLE = true then already dealt with in DoSingletons
 			else					// One singleton and one dominance unsafe cell
                             DoIt = !DOSINGLEWITHMORE;	// If DOSINGLEWITHMORE = true then already dealt with in DoSingletons
-                        }
+                    }
+                    else DoIt = true; // Two cells, no singletons
                 }
 		//} // Only DoIt possible if (rowcount <= MINCOUNT) && (Cellen->size() > 1)
 					
