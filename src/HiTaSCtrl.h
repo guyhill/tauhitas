@@ -26,6 +26,8 @@
 #include <iostream>
 #include <time.h>
 
+#define __declspec(x)
+
 class __declspec(dllexport) HiTaSCtrl
 //class HiTaSCtrl
 {

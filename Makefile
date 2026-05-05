@@ -14,7 +14,7 @@ MKDIR           = mkdir
 RM              = rm -f
 CP              = cp -p
 
-32BIT           = true  # is the default
+32BIT           = false
 #32BIT           = false
 
 SWIGDIR         = D:/Peter-Paul/Documents/Thuiswerk/Programmatuur/swigwin-4.0.2
@@ -23,7 +23,7 @@ ifeq ($(32BIT), false)  # 64 bit assumed
     BITS        = -m64 -D_LP64
     ARCH        = x86_64
     CND_PLATFORM= MinGW-Windows64
-    JAVADIR     = ../../../Java/zulu8.52.0.23-ca-jdk8.0.282-win_x64
+    JAVADIR     = /usr/lib/jvm/java-21-openjdk-amd64
     GNUDIR      = C:/Progra~1/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin
 else                    # 32 bit assumed
     BITS        = -m32
@@ -33,14 +33,14 @@ else                    # 32 bit assumed
     GNUDIR      = C:/Progra~2/mingw-w64/i686-8.1.0-win32-sjlj-rt_v6-rev0/mingw32/bin
 endif
 
-JAVAINC         = -I$(JAVADIR)/include -I$(JAVADIR)/include/win32
-CC              = $(GNUDIR)/g++
-CXX             = $(GNUDIR)/g++
-WINDRES         = $(GNUDIR)/windres
-SWIG            = $(SWIGDIR)/swig.exe
+JAVAINC         = -I$(JAVADIR)/include -I$(JAVADIR)/include/linux
+CC              = g++
+CXX             = g++
+WINDRES         = x86_64-w64-mingw32-windres
+SWIG            = swig
 
 # Macros
-CND_DLIB_EXT    = dll
+CND_DLIB_EXT    = so
 CND_CONF        = Debug
 CND_DISTDIR     = dist
 CND_BUILDDIR    = build
@@ -52,7 +52,7 @@ CSPDIR          = ../CSP/$(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)
 CSPLIBS         = -L$(CSPDIR)
 
 # Solvers
-SOLVER = CP,XP,SC# default is all three
+SOLVER = SC# default is all three
 comma:=,
 null:=
 space:= $(null) #
@@ -84,27 +84,27 @@ XPRLIBS         = -L$(XPRDIR) -lxprl -lxprs
 DIRLPS          = ../Solvers/scip-3.1.1
 DIRSOPLEX       = ../Solvers/soplex-2.0.1
 SCIPINC         = -I$(DIRLPS)/src -I$(DIRSOPLEX)/src
-SOPLEXLIB       = soplex-2.0.1.mingw.$(ARCH).gnu.opt
-NLPILIB         = nlpi.cppad-3.1.1.mingw.$(ARCH).gnu.opt
-SCIPLIB         = scip-3.1.1.mingw.$(ARCH).gnu.opt
-OBJSCIPLIB      = objscip-3.1.1.mingw.$(ARCH).gnu.opt
-LPISPXLIB       = lpispx-3.1.1.mingw.$(ARCH).gnu.opt
+SOPLEXLIB       = soplex-2.0.1.linux.$(ARCH).gnu.opt
+NLPILIB         = nlpi.cppad-3.1.1.linux.$(ARCH).gnu.opt
+SCIPLIB         = scip-3.1.1.linux.$(ARCH).gnu.opt
+OBJSCIPLIB      = objscip-3.1.1.linux.$(ARCH).gnu.opt
+LPISPXLIB       = lpispx-3.1.1.linux.$(ARCH).gnu.opt
 SCIPLIBS        = -L$(DIRLPS)/lib -L$(DIRSOPLEX)/lib -l$(OBJSCIPLIB) -l$(SCIPLIB) -l$(NLPILIB) -l$(LPISPXLIB) -l$(SOPLEXLIB)
 
 ifneq (,$(findstring CP,$(USEDSOLVERS)))
-	CSPLIBS += -lCSPlibCPLEX
+	CSPLIBS += -lCSP_CPLEX
 	SOLVERSINC += $(CPXINC)
 	SOLVERSLIBS += $(CPXLIBS)
 	ADDCXX += -DLPCP -DBUILD_CPXSTATIC
 endif
 ifneq (,$(findstring XP,$(USEDSOLVERS)))
-	CSPLIBS += -lCSPlibXPRESS
+	CSPLIBS += -lCSP_XPRESS
 	SOLVERSINC += $(XPRINC)
 	SOLVERSLIBS += $(XPRLIBS)
 	ADDCXX += -DLPXP
 endif
 ifneq (,$(findstring SC,$(USEDSOLVERS)))
-	CSPLIBS += -lCSPlibSCIP
+	CSPLIBS += -lCSP_SCIP
 	SOLVERSINC += $(SCIPINC)
 	SOLVERSLIBS += $(SCIPLIBS)
 	ADDCXX += -DLPSC
@@ -127,13 +127,13 @@ OBJECTFILES = \
     $(OBJECTDIR)/src/WrapCSP.o
 
 # Link Libraries and Options
-LDLIBSOPTIONS   = $(CSPLIBS) $(SOLVERSLIBS) $(CND_BUILDDIR)/$(CND_CONF)/$(CND_PLATFORM)/src/Versioninfo.o
+LDLIBSOPTIONS   = $(CSPLIBS) $(SOLVERSLIBS) #$(CND_BUILDDIR)/$(CND_CONF)/$(CND_PLATFORM)/src/Versioninfo.o
 # CC Compiler Flags
 SFLAGS          = -c++ -I./src -java -package $(JAVAPACKAGE) -outdir $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)
 #CXXFLAGS        = -ggdb -DSECBOUNDS $(BITS) -fPIC -malign-double -std=c++11 -Wall
 CXXFLAGS        = -g -O2 -DSECBOUNDS $(BITS) $(ADDCXX) -fPIC -std=c++11 -Wall -fno-strict-aliasing
 #CXXFLAGS        = -ggdb -O0 -DSECBOUNDS $(BITS) -fPIC -std=c++11 -Wall -fno-strict-aliasing
-LDFLAGS         = $(CXXFLAGS) -Wl,--subsystem,windows -Wl,--kill-at -shared 
+LDFLAGS         = $(CXXFLAGS) -shared 
 
 .PHONY: all clean
 
@@ -141,7 +141,7 @@ all:
 	$(MKDIR) -p $(OBJECTDIR)/src
 	$(MKDIR) -p $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)
 
-	$(WINDRES) ./src/Versioninfo.rc $(CND_BUILDDIR)/$(CND_CONF)/$(CND_PLATFORM)/src/Versioninfo.o
+	#$(WINDRES) ./src/Versioninfo.rc $(CND_BUILDDIR)/$(CND_CONF)/$(CND_PLATFORM)/src/Versioninfo.o
 	$(SWIG) $(SFLAGS) -o ./src/HiTaSCtrl_wrap.cpp hitasctrl.swg
 	$(CXX) -c $(CXXFLAGS) $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/ALList.o src/ALList.cpp
 	$(CXX) -c $(CXXFLAGS) $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/AMiscFunc.o src/AMiscFunc.cpp

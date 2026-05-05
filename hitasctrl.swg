@@ -18,7 +18,7 @@
 %{
 #include "IProgressListener.h"
 #include "ICallback.h"
-#include "hitasctrl.h"
+#include "HiTaSCtrl.h"
 %}
 
 %feature("director") IProgressListener;
@@ -28,4 +28,4 @@
 // Generate wrapper code for the classes in these header files, so they can be called from Java
 %include "IProgressListener.h"
 %include "ICallback.h"
-%include "hitasctrl.h"
+%include "HiTaSCtrl.h"
