@@ -45,7 +45,7 @@ CND_CONF        = Debug
 CND_DISTDIR     = dist
 CND_BUILDDIR    = build
 
-LIBNAME         = TauHitas
+LIBNAME         = libTauHitas
 JAVAPACKAGE     = tauargus.extern.tauhitas
 
 CSPDIR          = ../CSP/$(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)
@@ -153,10 +153,10 @@ all:
 	$(CXX) -c $(CXXFLAGS) $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/HiTaSCtrl.o src/HiTaSCtrl.cpp
 	$(CXX) -c $(CXXFLAGS) -Wno-unused-function $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/HiTaSCtrl_wrap.o src/HiTaSCtrl_wrap.cpp
 	$(CXX) -c $(CXXFLAGS) $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/WrapCSP.o src/WrapCSP.cpp
-	$(CXX) $(LDFLAGS) -o $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/libtauhitas.$(CND_DLIB_EXT) $(OBJECTFILES) $(LDLIBSOPTIONS) 
+	$(CXX) $(LDFLAGS) -o $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/$(LIBNAME).$(CND_DLIB_EXT) $(OBJECTFILES) $(LDLIBSOPTIONS) 
 
 # Copy .dll and .java files to tau-argus development directory
-	$(CP) $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/libtauhitas.$(CND_DLIB_EXT) ../tauargus
+	$(CP) $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/$(LIBNAME).$(CND_DLIB_EXT) ../tauargus
 	$(CP) $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/*.java ../tauargus/src/tauargus/extern/tauhitas
 
 clean:
