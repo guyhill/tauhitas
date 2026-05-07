@@ -23,7 +23,7 @@ ifeq ($(32BIT), false)  # 64 bit assumed
     BITS        = -m64 -D_LP64
     ARCH        = x86_64
     CND_PLATFORM= MinGW-Windows64
-    JAVADIR     = /usr/lib/jvm/java-8-openjdk
+    JAVADIR     = /usr/lib/jvm/java-8-openjdk-amd64
     GNUDIR      = C:/Progra~1/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin
 else                    # 32 bit assumed
     BITS        = -m32
@@ -133,7 +133,7 @@ SFLAGS          = -c++ -I./src -java -package $(JAVAPACKAGE) -outdir $(CND_DISTD
 #CXXFLAGS        = -ggdb -DSECBOUNDS $(BITS) -fPIC -malign-double -std=c++11 -Wall
 CXXFLAGS        = -g -O2 -DSECBOUNDS $(BITS) $(ADDCXX) -fPIC -std=c++11 -Wall -fno-strict-aliasing
 #CXXFLAGS        = -ggdb -O0 -DSECBOUNDS $(BITS) -fPIC -std=c++11 -Wall -fno-strict-aliasing
-LDFLAGS         = $(CXXFLAGS) -shared 
+LDFLAGS         = $(CXXFLAGS) -shared -Wl,-Bsymbolic
 
 .PHONY: all clean
 
@@ -153,7 +153,7 @@ all:
 	$(CXX) -c $(CXXFLAGS) $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/HiTaSCtrl.o src/HiTaSCtrl.cpp
 	$(CXX) -c $(CXXFLAGS) -Wno-unused-function $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/HiTaSCtrl_wrap.o src/HiTaSCtrl_wrap.cpp
 	$(CXX) -c $(CXXFLAGS) $(SOLVERSINC) $(JAVAINC) -o $(OBJECTDIR)/src/WrapCSP.o src/WrapCSP.cpp
-	$(CXX) $(LDFLAGS) -o $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/$(LIBNAME).$(CND_DLIB_EXT) $(OBJECTFILES) $(LDLIBSOPTIONS) 
+	$(CXX) $(LDFLAGS) -o $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/$(LIBNAME).$(CND_DLIB_EXT) $(OBJECTFILES) $(LDLIBSOPTIONS)
 
 # Copy .dll and .java files to tau-argus development directory
 	$(CP) $(CND_DISTDIR)/$(CND_CONF)/$(CND_PLATFORM)/$(LIBNAME).$(CND_DLIB_EXT) ../tauargus
